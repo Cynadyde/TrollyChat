@@ -1,0 +1,12 @@
+main: net.efcraft.trollychat.TrollyChatPlugin
+name: TrollyChat
+version: 1.0.0
+authors:
+  - Cynadyde
+  - Jameshobbs
+description: >
+  Adds various chat modes for
+  light hearted server trolling
+commands:
+  chatmode:
+    description: enable or disable a chat mode
