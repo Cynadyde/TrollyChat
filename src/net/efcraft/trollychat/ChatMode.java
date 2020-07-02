@@ -7,6 +7,7 @@ import org.bukkit.permissions.Permission;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.IllegalFormatException;
 import java.util.function.Consumer;
 
 /**
@@ -14,7 +15,10 @@ import java.util.function.Consumer;
  */
 public enum ChatMode {
 
-    /* add additional chat modes down below! */
+    /* add additional chat modes down below!
+
+       IMPORTANT: the activate/deactivate messages should
+       contain a single %s, while any other %'s should be escaped (%%). */
 
     RAINBOW(
             "§6Rainbow Mode: ACTIVATED%s",
@@ -31,8 +35,8 @@ public enum ChatMode {
     ),
 
     TRIPLE_RAINBOW(
-            "§6TRIPLE Rainbow mode!$#!?$?@#$%@!: ACTIVATED%s",
-            "§6TRIPLE Rainbow mode!$#!?$?@#$%@!: DEACTIVATED%s",
+            "§6TRIPLE Rainbow mode!$#!?$?@#$%%@!: ACTIVATED%s",
+            "§6TRIPLE Rainbow mode!$#!?$?@#$%%@!: DEACTIVATED%s",
             new Permission("efcraft.chatmode.triplerainbow"),
             new TripleRainbowChatModifier()
     ),
@@ -136,9 +140,15 @@ public enum ChatMode {
      * @see #getStatusMsg(boolean)
      */
     public String getStatusMsg(boolean activated, @Nullable Player target) {
-        return String.format(
-                activated ? activationMsg : deactivationMsg,
-                target == null ? "" : " for §e" + target.getDisplayName());
+        try {
+            return String.format(
+                    activated ? activationMsg : deactivationMsg,
+                    target == null ? "" : " for §e" + target.getDisplayName());
+        }
+        catch (IllegalFormatException ex) {
+            return (activated ? activationMsg : deactivationMsg) +
+                    (target == null ? "" : " for &e" + target.getDisplayName());
+        }
     }
 
     /**
